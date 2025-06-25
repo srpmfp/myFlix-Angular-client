@@ -1,0 +1,39 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>User Login</mat-card-title>
+  </mat-card-header>
+  <form>
+    <mat-card-content>
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="userDetails.Username"
+          placeholder="Username"
+          type="text"
+          name="Username"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="userDetails.Password"
+          name="password"
+          placeholder="Password"
+          type="password"
+          required
+        />
+      </mat-form-field>
+    </mat-card-content>
+  </form>
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="loginUser()"
+      type="submit"
+    >
+      Login
+    </button>
+  </mat-card-actions>
+</mat-card>
