@@ -4,8 +4,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 
-const apiUrl = 'https://myflix-2023.herokuapp.com/';
+const apiUrl = 'https://appflixcf-d4726ef19667.herokuapp.com/';
 
+// const apiUrl = '/api/'; // Use relative path for local development
 @Injectable({
   providedIn: 'root'
 })
@@ -15,10 +16,22 @@ export class UserRegistrationService {
 
   }
 //C
-
   public userRegistration(userDetails: any): Observable<any> {
-    console.log(userDetails)
-    return this.http.post(apiUrl + 'users', userDetails).pipe(
+    console.log('API call - userRegistration with:', userDetails);
+    console.log('API URL:', apiUrl + 'users');
+    
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+     });
+
+    const body = JSON.stringify(userDetails);
+
+
+    return this.http.post(apiUrl + 'users', body, { headers }).pipe(
+      map((response: any) => {
+        console.log('Registration response:', response);
+        return response;
+      }),
       catchError(this.handleError)
     );
   }
@@ -42,7 +55,7 @@ export class UserRegistrationService {
 
   public addFavoriteMovie(userName: any, movieId: any): Observable<any> {
     console.log(userName, movieId)
-    return this.http.post(apiUrl + 'users/' + userName + movieId, {}).pipe(
+    return this.http.post(apiUrl + 'users/' + userName +'/' + movieId, {}).pipe(
       catchError(this.handleError)
     );
   }
@@ -64,7 +77,9 @@ export class UserRegistrationService {
   public getGenre(genreName: any): Observable<any> {
     console.log(genreName)
     return this.http.get(apiUrl + 'movies/genre/' + genreName)
-  }  public getUser(userInfo: any): Observable<any> {
+  }
+  
+  public getUser(userInfo: any): Observable<any> {
     console.log(userInfo)
     return this.http.get(apiUrl + 'users/' + userInfo).pipe(
       map((response: any) => {
@@ -76,9 +91,9 @@ export class UserRegistrationService {
     );
   }
   //U
-  public editUser(userId: any, userData: any): Observable<any> {
-    console.log(userId, userData)
-    return this.http.put(apiUrl + 'users/' + userId, userData).pipe(
+  public editUser(username: any, userData: any): Observable<any> {
+    console.log(username, userData)
+    return this.http.put(apiUrl + 'users/' + username, userData).pipe(
       map((response: any) => {
         // Update stored user data after successful edit
         localStorage.setItem('user', JSON.stringify(response));
@@ -152,18 +167,21 @@ export class UserRegistrationService {
 
   //Error handling
   
-  
-  private handleError(error: HttpErrorResponse): any {
+    private handleError(error: HttpErrorResponse): any {
+    console.error('HTTP Error occurred:', error);
+    
     if (error.error instanceof ErrorEvent) {
-      console.error('An error occurred:', error.error.message)
+      // Client-side error
+      console.error('Client-side error:', error.error.message);
     } else {
-      console.error(
-        'Error status code: ${error.status}, ' +
-        'Error body: ${error.error}'
-      )
+      // Server-side error
+      console.error(`Server returned code ${error.status}, error body:`, error.error);
+      
+      if (error.status === 0) {
+        console.error('This is likely a CORS issue or network connectivity problem');
+      }
     }
-    return throwError(
-      'Something bad happened; please try again later.'
-    );
+    
+    return throwError(() => error);
   }
  }

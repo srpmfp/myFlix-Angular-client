@@ -1,0 +1,8 @@
+{
+    "/api": {
+      "target": "https://myflix-2023.herokuapp.com",
+      "secure": false,
+      "changeOrigin": true,
+      "pathRewrite": {"^/api": ""}
+    }
+  }
