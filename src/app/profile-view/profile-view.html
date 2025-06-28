@@ -1,0 +1,71 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Profile</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form>
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="userDetails.Username"
+          placeholder="{{userDetails.Username || 'Username'}}"
+          type="text"
+          name="Username"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="userDetails.Password"
+          type="password"
+          placeholder="Password"
+          name="Password"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="userDetails.email"
+          type="email"
+          placeholder="{{userDetails.email || 'Email'}}"
+          name="Email"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="userDetails.birthday"
+          type="date"
+          placeholder="{{userDetails.birthday || 'Birthday'}}"
+          name="Birthday"
+        />
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button 
+    (click)="updateUser()"
+   
+    
+    color="primary">
+      Update Profile
+    </button>
+    <button
+      mat-raised-button
+      (click)="goBack()"
+    >
+      Go Back
+    </button>
+  </mat-card-actions>
+</mat-card>
+<div >
+  <div> {{ userDetails.Username ? 'Username: ' + userDetails.Username : '' }}</div>
+ 
+  <div> {{ userDetails.email ? 'Email: ' + userDetails.email : '' }}</div>
+ 
+  <div> {{ userDetails.birthday  ? 'Birthday: ' +( userDetails.birthday | date: 'MM-dd-yyyy' ) : '' }}</div>
+ 
+</div>

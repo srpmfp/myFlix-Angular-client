@@ -1,4 +1,5 @@
 import { Component, inject} from '@angular/core';
+import { Router }  from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -7,11 +8,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { UserRegistrationService } from '../fetch-api-data';
+import { LocalStorageService } from '../services/storage.service';
+
 
 
 @Component({
   selector: 'app-user-login-form',
   imports: [
+    
     FormsModule,
     MatDialogModule,
     MatSnackBarModule,
@@ -24,29 +28,39 @@ import { UserRegistrationService } from '../fetch-api-data';
   styleUrl: './user-login-form.scss'
 })
 export class UserLoginForm {
+
+  // Inject LocalStorageService
+  localStorage = inject(LocalStorageService);
   // Modern signal-based input
-  userDetails = { Username: '', Password: '' };
+  user = { Username: '', Password: '' };
 
   // Inject services using the modern inject() function
   private fetchApiData = inject(UserRegistrationService);
   private dialogRef = inject(MatDialogRef<UserLoginForm>);
   private snackBar = inject(MatSnackBar);
+  private Router = inject(Router);
 
   // Function responsible for sending the form inputs to the backend
   loginUser(): void {
-    console.log('Attempting login with data:', this.userDetails);
+    console.log('Attempting login with data:', this.user);
 
     // Validate form data
-    if (!this.userDetails.Username || !this.userDetails.Password) {
+    if (!this.user.Username || !this.user.Password) {
       this.snackBar.open('Please fill in all required fields.', 'OK', {
         duration: 3000
       });
       return;
     }
 
-    this.fetchApiData.userLogin(this.userDetails).subscribe({
+    this.fetchApiData.userLogin(this.user).subscribe({
       next: (result) => {
         console.log('Login successful:', result);
+         if (result.token) {
+                  this.localStorage.setItem('token', result.token);
+                  this.localStorage.setItem('user', JSON.stringify(result.user));
+                }
+              
+        this.Router.navigate(['movies'])
         this.dialogRef.close(); // This will close the modal on success!
         this.snackBar.open('Login successful!', 'OK', {
           duration: 2000

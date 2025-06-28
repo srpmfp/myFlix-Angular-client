@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject} from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
+import { LocalStorageService } from './services/storage.service';
+
 
 const apiUrl = 'https://appflixcf-d4726ef19667.herokuapp.com/';
 
@@ -10,12 +12,17 @@ const apiUrl = 'https://appflixcf-d4726ef19667.herokuapp.com/';
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class UserRegistrationService {
 
-  constructor(private http: HttpClient) {
-
-  }
+constructor(private http: HttpClient){}
+localStorage = inject(LocalStorageService);
+   
 //C
+
+
+//Create User
   public userRegistration(userDetails: any): Observable<any> {
     console.log('API call - userRegistration with:', userDetails);
     console.log('API URL:', apiUrl + 'users');
@@ -35,17 +42,19 @@ export class UserRegistrationService {
       catchError(this.handleError)
     );
   }
-  // User login function
-  public userLogin(userDetails: any): Observable<any> {
-    console.log(userDetails)
-    return this.http.post(apiUrl + 'login', userDetails).pipe(
+
+// User login function
+  public userLogin(user: any): Observable<any> {
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  
+    return this.http.post(apiUrl + 'login', user, {headers}).pipe(
       map((response: any) => {
         // Store token and user info in localStorage after successful login
         if (response.token) {
-          localStorage.setItem('token', response.token);
-        }
-        if (response.user) {
-          localStorage.setItem('user', JSON.stringify(response.user));
+          this.localStorage.setItem('token', response.token);
         }
         return response;
       }),
@@ -53,32 +62,53 @@ export class UserRegistrationService {
     );
   }
 
+//Add a favorite movie to the user's list
   public addFavoriteMovie(userName: any, movieId: any): Observable<any> {
     console.log(userName, movieId)
-    return this.http.post(apiUrl + 'users/' + userName +'/' + movieId, {}).pipe(
+    return this.http.post(apiUrl + 'users/' + userName +'/' + movieId,{
+      headers: new HttpHeaders({
+       
+        Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
+
+      })
+    }).pipe(
       catchError(this.handleError)
     );
   }
   
 //R
-
+//Filter movies by title
   public getOneMovie(movieDetail: any): Observable<any> {
     console.log(movieDetail)
-    return this.http.get(apiUrl + 'movies/' +movieDetail).pipe(
+    return this.http.get(apiUrl + 'movies/' +movieDetail, {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
+      })
+    }).pipe(
       catchError(this.handleError)
     )
   }
-  
+//Get Director by name
   public getDirector(directorName: any): Observable<any> {
     console.log(directorName)
-    return this.http.get(apiUrl + 'movies/director/' + directorName)
+    return this.http.get(apiUrl + 'movies/director/' + directorName,{
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
+      })
+    })
   }
-
+// get genre by name
   public getGenre(genreName: any): Observable<any> {
     console.log(genreName)
-    return this.http.get(apiUrl + 'movies/genre/' + genreName)
+    return this.http.get(apiUrl + 'movies/genre/' + genreName,{
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
+      })
+    })
   }
+
   
+// Get user info by username
   public getUser(userInfo: any): Observable<any> {
     console.log(userInfo)
     return this.http.get(apiUrl + 'users/' + userInfo).pipe(
@@ -90,13 +120,22 @@ export class UserRegistrationService {
       catchError(this.handleError)
     );
   }
-  //U
-  public editUser(username: any, userData: any): Observable<any> {
-    console.log(username, userData)
-    return this.http.put(apiUrl + 'users/' + username, userData).pipe(
+
+
+
+//Update user information
+  public editUser(Username: any, userData: any): Observable<any> {
+
+    return this.http.put(apiUrl + 'users/' + Username, userData , { //sends Username, email, birthday
+      
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + this.localStorage.getItem('token') || '',
+      })
+    }).pipe(
       map((response: any) => {
         // Update stored user data after successful edit
-        localStorage.setItem('user', JSON.stringify(response));
+        this.localStorage.setItem('user', JSON.stringify(response));
         return response;
       }),
       catchError(this.handleError)
@@ -113,7 +152,7 @@ export class UserRegistrationService {
 
   // Local storage utility methods
   public getStoredUser(): any {
-    const user = localStorage.getItem('user');
+    const user = this.localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   }
 
@@ -122,17 +161,9 @@ export class UserRegistrationService {
     return user.movieID ? user.movieID : [];
   }
 
-  public getStoredToken(): string | null {
-    return localStorage.getItem('token');
-  }
-
-  public clearStoredData(): void {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-  }
 
   public updateStoredUser(userData: any): void {
-    localStorage.setItem('user', JSON.stringify(userData));
+    this.localStorage.setItem('user', JSON.stringify(userData));
   }
 
 
@@ -140,10 +171,11 @@ export class UserRegistrationService {
   
   // Fetch all movies also requires a token
   public getAllMovies(): Observable<any> {
-    const token = localStorage.getItem('token');
+
+   
     return this.http.get(apiUrl + 'movies', {
       headers: new HttpHeaders({
-        Authorization: 'Bearer ' + token
+        Authorization: 'Bearer ' +this.localStorage.getItem('token')|| ''
       })
     }).pipe(
       catchError(this.handleError)
@@ -158,7 +190,7 @@ export class UserRegistrationService {
     return this.http.delete(apiUrl + 'users/' + userId).pipe(
       map(() => {
         // Clear stored user data and token after successful deletion
-        this.clearStoredData();
+        this.localStorage.removeItem('user');
       }),
       catchError(this.handleError)
     );

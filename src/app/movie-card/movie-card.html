@@ -1,0 +1,37 @@
+<button 
+    mat-raised-button
+    (click)="navToProfile()"
+    >
+    Profile
+</button>
+<div style="display: flex;">
+    <mat-card *ngFor="let movie of movies; let i=index" style="flex: 1 ;">
+        <mat-card-header>
+        <mat-card-title>{{movie.title}}</mat-card-title>
+            <mat-card-subtitle>Directed by: {{movie.director.Name}}</mat-card-subtitle>
+        </mat-card-header>
+        <img src={{movie.image}} style="width:300px" alt= {{movie.title}} />
+        <mat-card-actions>
+            <button
+                mat-button
+                color="primary"
+            >
+                Genre
+            </button>
+            <button
+                mat-button
+                color="primary"
+            >
+                Director
+            </button>
+            <button
+                mat-button
+                color="primary"
+            >
+                Synopsis
+            </button>
+            <mat-icon
+            (click)="addToFavorites(movie.id)">favorite_border</mat-icon>
+        </mat-card-actions>
+    </mat-card>
+</div>
