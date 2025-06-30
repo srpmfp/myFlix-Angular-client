@@ -90,7 +90,7 @@ export class MovieCard {
           title: infoType,
           content: {
             name: data.name,
-            bio: data.bio,
+            description: data.bio,
             birthday: data.birthday,
             death: data.death
           }

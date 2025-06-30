@@ -42,7 +42,6 @@ export class UserLoginForm {
 
   // Function responsible for sending the form inputs to the backend
   loginUser(): void {
-    console.log('Attempting login with data:', this.user);
 
     // Validate form data
     if (!this.user.Username || !this.user.Password) {
@@ -54,7 +53,7 @@ export class UserLoginForm {
 
     this.fetchApiData.userLogin(this.user).subscribe({
       next: (result) => {
-        console.log('Login successful:', result);
+      
         if (result.token) {
           this.localStorage.setItem('token', result.token);
           this.localStorage.setItem('user', JSON.stringify(result.user));
