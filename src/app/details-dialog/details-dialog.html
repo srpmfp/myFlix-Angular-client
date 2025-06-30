@@ -1,0 +1,21 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>{{ data.title }}</h2>
+  
+  <mat-dialog-content class="dialog-content">
+    <h3 *ngIf="data.title === 'Genre'">{{ data.content.enre }}</h3>
+    
+    <p *ngIf="data.content.name">{{ data.content.name }}</p>
+    <p *ngIf="data.content.description">{{data.content.description}}</p>
+    <p *ngIf="data.content.description===undefined">No Description Available</p>
+    
+    <!-- Additional fields for director -->
+    <div *ngIf="data.content.birthday || data.content.death">
+      <p *ngIf="data.content.birthday"><strong>Born:</strong> {{ data.content.birthday | date }}</p>
+      <p *ngIf="data.content.death"><strong>Died:</strong> {{ data.content.death | date }}</p>
+    </div>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">Close</button>
+  </mat-dialog-actions>
+</div>

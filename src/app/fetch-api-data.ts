@@ -1,4 +1,4 @@
-import { Injectable, inject} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -16,41 +16,40 @@ const apiUrl = 'https://appflixcf-d4726ef19667.herokuapp.com/';
 
 export class UserRegistrationService {
 
-constructor(private http: HttpClient){}
-localStorage = inject(LocalStorageService);
-   
-//C
+  constructor(private http: HttpClient) { }
+  localStorage = inject(LocalStorageService);
+
+  //C
 
 
-//Create User
+  //Create User
   public userRegistration(userDetails: any): Observable<any> {
-    console.log('API call - userRegistration with:', userDetails);
-    console.log('API URL:', apiUrl + 'users');
-    
+
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-     });
+    });
 
     const body = JSON.stringify(userDetails);
 
 
     return this.http.post(apiUrl + 'users', body, { headers }).pipe(
       map((response: any) => {
-        console.log('Registration response:', response);
+
         return response;
       }),
       catchError(this.handleError)
     );
   }
 
-// User login function
+  // User login function
   public userLogin(user: any): Observable<any> {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     })
-  
-    return this.http.post(apiUrl + 'login', user, {headers}).pipe(
+
+    return this.http.post(apiUrl + 'login', user, { headers }).pipe(
       map((response: any) => {
         // Store token and user info in localStorage after successful login
         if (response.token) {
@@ -62,25 +61,26 @@ localStorage = inject(LocalStorageService);
     );
   }
 
-//Add a favorite movie to the user's list
+  //Add a favorite movie to the user's list
   public addFavoriteMovie(userName: any, movieId: any): Observable<any> {
-    console.log(userName, movieId)
-    return this.http.post(apiUrl + 'users/' + userName +'/' + movieId,{
+    return this.http.post(apiUrl + 'users/' + userName, movieId, {
       headers: new HttpHeaders({
-       
         Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
-
       })
     }).pipe(
+      map((response: any) => {
+
+        return response;
+      }),
       catchError(this.handleError)
     );
   }
-  
-//R
-//Filter movies by title
+
+  //R
+  //Filter movies by title
   public getOneMovie(movieDetail: any): Observable<any> {
-    console.log(movieDetail)
-    return this.http.get(apiUrl + 'movies/' +movieDetail, {
+
+    return this.http.get(apiUrl + 'movies/' + movieDetail, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
       })
@@ -88,64 +88,77 @@ localStorage = inject(LocalStorageService);
       catchError(this.handleError)
     )
   }
-//Get Director by name
+  //Get Director by name
   public getDirector(directorName: any): Observable<any> {
-    console.log(directorName)
-    return this.http.get(apiUrl + 'movies/director/' + directorName,{
+
+    return this.http.get(apiUrl + 'movies/director/' + directorName, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
       })
     })
   }
-// get genre by name
+  // get genre by name
   public getGenre(genreName: any): Observable<any> {
-    console.log(genreName)
-    return this.http.get(apiUrl + 'movies/genre/' + genreName,{
+
+    return this.http.get(apiUrl + 'movies/genre/' + genreName, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
       })
     })
   }
 
-  
-// Get user info by username
+
+  // Get user info by username
   public getUser(userInfo: any): Observable<any> {
-    console.log(userInfo)
-    return this.http.get(apiUrl + 'users/' + userInfo).pipe(
-      map((response: any) => {
-        // Store user info in localStorage when fetched
-        localStorage.setItem('user', JSON.stringify(response));
-        return response;
-      }),
-      catchError(this.handleError)
-    );
-  }
 
-
-
-//Update user information
-  public editUser(Username: any, userData: any): Observable<any> {
-
-    return this.http.put(apiUrl + 'users/' + Username, userData , { //sends Username, email, birthday
-      
+    return this.http.get(apiUrl + 'users/' + userInfo, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + this.localStorage.getItem('token') || '',
+        Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
       })
     }).pipe(
       map((response: any) => {
-        // Update stored user data after successful edit
-        this.localStorage.setItem('user', JSON.stringify(response));
+        // Store user info in localStorage when fetched
         return response;
       }),
       catchError(this.handleError)
     );
   }
 
- 
+
+
+  //Update user information
+  public editUser(Username: any, userData: any): Observable<any> {
+
+    return this.http.put(apiUrl + 'users/' + Username, userData, { //sends Username, email, birthday
+
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.localStorage.getItem('token'),
+      })
+    }).pipe(
+      map((response: any) => {
+        // Return the response properly
+        return response;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+
   public deleteFavoriteMovie(userId: any, movieId: any): Observable<any> {
-    console.log(userId, movieId)
-    return this.http.delete(apiUrl + 'users/' + userId+ "/" + movieId).pipe(
+
+    return this.http.delete(apiUrl + 'users/' + userId + "/movies/" + movieId, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.localStorage.getItem('token'),
+      })
+    }).pipe(
+      map((response: any) => {
+        // Update localStorage after removing favorite movie
+
+        return response;
+      }),
       catchError(this.handleError)
     );
   }
@@ -167,26 +180,39 @@ localStorage = inject(LocalStorageService);
   }
 
 
-  
-  
+
+
   // Fetch all movies also requires a token
+
   public getAllMovies(): Observable<any> {
+    try {
+      return this.http.get(apiUrl + 'movies', {
 
-   
-    return this.http.get(apiUrl + 'movies', {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' +this.localStorage.getItem('token')|| ''
-      })
-    }).pipe(
-      catchError(this.handleError)
-    );  } //modern angular uses observables to handle asynchronous operations so dont need the private variable
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + this.localStorage.getItem('token')
+        })
 
-  
-  
+      }).pipe(
+        map((response: any) => {
+          // Store movies in localStorage
+          this.localStorage.setItem('movies', JSON.stringify(response));
+          return response;
+        }),
+        catchError(this.handleError)
+      );
+    }
+    catch (error) {
+
+      return throwError(() => new Error('Failed to fetch movies'));
+    }
+  }
+
+
   //D
 
   public deleteUser(userId: any): Observable<any> {
-    console.log(userId)
+
     return this.http.delete(apiUrl + 'users/' + userId).pipe(
       map(() => {
         // Clear stored user data and token after successful deletion
@@ -195,25 +221,25 @@ localStorage = inject(LocalStorageService);
       catchError(this.handleError)
     );
   }
-  
+
 
   //Error handling
-  
-    private handleError(error: HttpErrorResponse): any {
+
+  private handleError(error: HttpErrorResponse): any {
     console.error('HTTP Error occurred:', error);
-    
+
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       console.error('Client-side error:', error.error.message);
     } else {
       // Server-side error
       console.error(`Server returned code ${error.status}, error body:`, error.error);
-      
+
       if (error.status === 0) {
         console.error('This is likely a CORS issue or network connectivity problem');
       }
     }
-    
+
     return throwError(() => error);
   }
- }
+}

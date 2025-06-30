@@ -1,5 +1,5 @@
-import { Component, inject} from '@angular/core';
-import { Router }  from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -15,7 +15,7 @@ import { LocalStorageService } from '../services/storage.service';
 @Component({
   selector: 'app-user-login-form',
   imports: [
-    
+
     FormsModule,
     MatDialogModule,
     MatSnackBarModule,
@@ -55,11 +55,11 @@ export class UserLoginForm {
     this.fetchApiData.userLogin(this.user).subscribe({
       next: (result) => {
         console.log('Login successful:', result);
-         if (result.token) {
-                  this.localStorage.setItem('token', result.token);
-                  this.localStorage.setItem('user', JSON.stringify(result.user));
-                }
-              
+        if (result.token) {
+          this.localStorage.setItem('token', result.token);
+          this.localStorage.setItem('user', JSON.stringify(result.user));
+        }
+
         this.Router.navigate(['movies'])
         this.dialogRef.close(); // This will close the modal on success!
         this.snackBar.open('Login successful!', 'OK', {

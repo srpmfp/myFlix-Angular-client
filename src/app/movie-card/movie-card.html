@@ -1,37 +1,46 @@
-<button 
-    mat-raised-button
-    (click)="navToProfile()"
-    >
-    Profile
-</button>
-<div style="display: flex;">
-    <mat-card *ngFor="let movie of movies; let i=index" style="flex: 1 ;">
+<app-menubar-view></app-menubar-view>
+
+<div class="main-card">
+    <div *ngIf="movies.length === 0" class="loading-message">
+        <p>Loading movies...</p>
+    </div>
+    
+    <mat-card *ngFor="let movie of movies" class="movie-card">
         <mat-card-header>
-        <mat-card-title>{{movie.title}}</mat-card-title>
-            <mat-card-subtitle>Directed by: {{movie.director.Name}}</mat-card-subtitle>
+            <mat-card-title><b>{{movie.title}}</b></mat-card-title>
+            <mat-card-subtitle>Directed by: {{movie.director.name}}</mat-card-subtitle>
         </mat-card-header>
-        <img src={{movie.image}} style="width:300px" alt= {{movie.title}} />
+        <img src={{movie.image}} style="width:200px " alt= {{movie.title}} />
         <mat-card-actions>
             <button
                 mat-button
-                color="primary"
-            >
+                (click)="openDialog( '400ms', '200ms', 'Genre', movie)"
+                >
                 Genre
             </button>
+
+
             <button
                 mat-button
-                color="primary"
+                (click)="openDialog('400ms', '200ms', 'Director', movie.director)"
             >
                 Director
             </button>
-            <button
+<button
                 mat-button
-                color="primary"
+                (click)="openDialog('400ms', '200ms', 'Synopsis', movie)"
             >
                 Synopsis
             </button>
-            <mat-icon
-            (click)="addToFavorites(movie.id)">favorite_border</mat-icon>
-        </mat-card-actions>
+            <button
+                style="background-color:transparent; border:none;"
+
+                [ngClass]="isFavorite(movie)"
+            >
+                <mat-icon (click)="addToFavorites(movie)">
+                    {{isFavorite(movie) === 'selectFavorite' ? 'favorite' : 'favorite_border'}}
+                </mat-icon>
+            </button>
+        </mat-card-actions>   
     </mat-card>
 </div>

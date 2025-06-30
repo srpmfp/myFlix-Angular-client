@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { UserRegistrationService } from '../fetch-api-data';
-import { LocalStorageService } from '../services/storage.service'; 
+import { LocalStorageService } from '../services/storage.service';
 
 
 @Component({
@@ -22,7 +22,7 @@ import { LocalStorageService } from '../services/storage.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    DatePipe
+
   ],
   templateUrl: './profile-view.html',
   styleUrl: './profile-view.scss'
@@ -30,15 +30,15 @@ import { LocalStorageService } from '../services/storage.service';
 
 
 export class ProfileView implements OnInit {
-  localStorage =  inject(LocalStorageService);
+  localStorage = inject(LocalStorageService);
   userDetails = { Username: '', Password: '', email: '', birthday: '' };
-  
+
   private fetchApiData = inject(UserRegistrationService);
   // private dialogRef = inject(MatDialogRef<ProfileView>);
   private snackBar = inject(MatSnackBar);
   private platformId = inject(PLATFORM_ID);
   private Router = inject(Router);
- 
+
 
   // Helper method to check if running in browser
   private isBrowser(): boolean {
@@ -46,7 +46,7 @@ export class ProfileView implements OnInit {
   }
 
   ngOnInit(): void {
-    if(!this.localStorage.getItem('user')) { 
+    if (!this.localStorage.getItem('user')) {
       this.Router.navigate(['welcome']);
     }
     this.loadUserDetails();
@@ -55,14 +55,14 @@ export class ProfileView implements OnInit {
 
   // Load existing user details from localStorage
   private loadUserDetails(): void {
-  
+
     if (this.isBrowser()) {
       const storedUser = this.localStorage.getItem('user');
       const userData = JSON.parse(storedUser || '{}');
 
       if (userData) {
         try {
-         
+
           this.userDetails = {
             Username: userData.Username,
             Password: '', // Don't pre-fill password for security
@@ -84,50 +84,58 @@ export class ProfileView implements OnInit {
 
     const storedUser = this.localStorage.getItem('user');
     const userData = JSON.parse(storedUser || '{}');
+
+    // Include password if provided, otherwise send existing password or empty string
     const updateData = {
       Username: this.userDetails.Username,
       email: this.userDetails.email,
-      birthday: this.userDetails.birthday
+      birthday: this.userDetails.birthday,
+      Password: this.userDetails.Password || '' // Include password field
     }
 
+    try {
 
-      try {
-        console.log( 'updateData: ', updateData );
-       console.log(userData);
-        
-        this.fetchApiData.editUser(userData.Username, updateData).subscribe({
-          next: (result) => {
-            console.log('User updated successfully:', result);
-            
-            // Update localStorage with new user data
-            this.localStorage.setItem('user', JSON.stringify(result));
-            
-            
-            // Show success message
-            this.snackBar.open('Profile updated successfully!', 'OK', {
-              duration: 2000
-            });
-          },
-          error: (error) => {
-            console.error('Error updating user:', error);
-            this.snackBar.open('Failed to update profile. Please try again.', 'OK', {
-              duration: 3000
-            });
-          }
-        });
-      } catch (error) {
-        console.error('Error parsing user data from localStorage:', error);
-        this.snackBar.open('Error loading user data.', 'OK', {
-          duration: 3000
-        });
-      }
+
+      this.fetchApiData.editUser(userData.Username, updateData).subscribe({
+        next: (result) => {
+          console.log('User updated successfully:', result);
+
+          // Update localStorage with new user data
+          this.localStorage.setItem('user', JSON.stringify(result));
+
+          // Update local userDetails to reflect changes
+          this.userDetails = {
+            Username: result.Username,
+            Password: '', // Clear password field after update
+            email: result.email,
+            birthday: result.birthday
+          };
+
+          // Show success message
+          this.snackBar.open('Profile updated successfully!', 'OK', {
+            duration: 2000
+          });
+        },
+        error: (error) => {
+          console.error('Error updating user:', error);
+          this.snackBar.open('Failed to update profile. Please try again.', 'OK', {
+            duration: 3000
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Error parsing user data from localStorage:', error);
+      this.snackBar.open('Error loading user data.', 'OK', {
+        duration: 3000
+      });
+    }
   }
-    
+
 
   goBack(): void {
- 
-      this.Router.navigate(['/movies']); // or wherever you want to navigate back to
-    
+
+    this.Router.navigate(['/movies']); // or wherever you want to navigate back to
+
   }
 }
 

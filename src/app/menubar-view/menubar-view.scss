@@ -1,0 +1,17 @@
+.menubar-view{
+    width:100%;
+    height:20%;
+    display: flex;
+    background-color:#B1C502;
+    justify-content: space-evenly;
+    & button{
+        height:100%;
+        border: 5px solid #B1C502;
+        
+        button:hover{
+            transform: scale(1.5);
+            transition: transform 0.3s ease;
+        }
+       
+    }
+}

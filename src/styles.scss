@@ -3,6 +3,28 @@
 // For more information: https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+
+
+.bitcount-grid-double-sp {
+  font-family: "Bitcount Grid Double", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "CRSV" 0.5,
+    "ELSH" 0,
+    "ELXP" 0;
+}
+
+body{
+  background-color: #3D7688; 
+  margin: 0; 
+  font-family: bitcount-grid-double-sp, sans-serif;
+}
+
+
+
 html {
   @include mat.theme((
     color: (
@@ -16,4 +38,4 @@ html {
 }/* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+

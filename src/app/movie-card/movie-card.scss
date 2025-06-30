@@ -1,0 +1,52 @@
+.selectFavorite{
+    
+   mat-icon{
+    color:red;
+
+   }
+}
+.notFavorite{
+    mat-icon {
+        color: #666; // or whatever default color you want
+    }
+}
+.main-card{
+    scroll-snap-type: x mandatory;
+    
+    background-color: #788477;
+    justify-self:center;
+    display: flex; 
+    height: 75vh;
+    width: 75%;
+    flex-direction:row; 
+    // justify-content:center;
+    align-items: stretch;
+    overflow-x: scroll;
+    scrollbar-width: none; /* Firefox */
+   padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    .movie-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s;
+        z-index:2;
+    }
+    ::after{
+        background-image: linear-gradient(to right, transparent, #3d768832);
+    }
+}
+.movie-card{
+    scroll-snap-align: start;
+    background-color: #CBDFC9;
+    margin: .1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    height: 100%;
+    
+
+    
+}
