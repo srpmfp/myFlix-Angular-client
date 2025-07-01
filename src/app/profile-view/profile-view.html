@@ -5,7 +5,9 @@
   <mat-card-content>
     <form>
       <mat-form-field>
-        <div>Username</div>
+        <div><span><b>Username</b></span>
+             <p> 
+        {{userDetails.Username || 'Username'}}</div>
         <input
           matInput
           [(ngModel)]="userDetails.Username"
@@ -16,7 +18,9 @@
         />
       </mat-form-field>
       <mat-form-field>
-        <div>Password</div>
+        <div><span><b>Password</b></span> <br>
+             <p> 
+         <br></div>
         <input
           matInput
           [(ngModel)]="userDetails.Password"
@@ -27,7 +31,9 @@
         />
       </mat-form-field>
       <mat-form-field>
-        <div>Email</div>
+        <div><span><b>Email</b></span> <br>
+             <p> 
+        {{userDetails.email || 'Email'}}</div>
         <input
           matInput
           [(ngModel)]="userDetails.email"
@@ -38,12 +44,14 @@
         />
       </mat-form-field>
       <mat-form-field>
-        <div>Birthday</div>
+        <div><span><b>Birthday</b></span> <br>
+          <p> 
+          {{userDetails.birthday | date: 'shortDate' }}</div>
         <input
           matInput
           [(ngModel)]="userDetails.birthday"
           type="date"
-          placeholder="{{userDetails.birthday || 'Birthday'}}"
+          placeholder="{{userDetails.birthday | date: 'shortDate' }}"
           name="Birthday"
         />
       </mat-form-field>
@@ -58,10 +66,9 @@
     color="primary">
       Update Profile
     </button>
+
     <button mat-raised-button 
-    (click)="updateUser()"
-   
-    
+    (click)="deleteUser()"
     color="primary">
       Delete Profile
     </button>

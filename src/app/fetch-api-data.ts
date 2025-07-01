@@ -213,7 +213,13 @@ export class UserRegistrationService {
 
   public deleteUser(userId: any): Observable<any> {
 
-    return this.http.delete(apiUrl + 'users/' + userId).pipe(
+    return this.http.delete(apiUrl + 'users/' + userId, {
+     
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.localStorage.getItem('token') || ''
+      })
+    }).pipe(
       map(() => {
         // Clear stored user data and token after successful deletion
         this.localStorage.removeItem('user');

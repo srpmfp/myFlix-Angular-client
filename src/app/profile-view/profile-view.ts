@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { UserRegistrationService } from '../fetch-api-data';
 import { LocalStorageService } from '../services/storage.service';
+import { Pipe } from '@angular/core';
 
 
 @Component({
@@ -22,6 +23,7 @@ import { LocalStorageService } from '../services/storage.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    DatePipe
 
   ],
   templateUrl: './profile-view.html',
@@ -131,6 +133,25 @@ export class ProfileView implements OnInit {
     }
   }
 
+  deleteUser(): void {
+    const Username = JSON.parse(this.localStorage.getItem('user') || '{}').Username;
+      console.log('Deleting user with ID:', Username);
+    this.fetchApiData.deleteUser(Username).subscribe({
+      next: (result) => {
+        console.log('User deleted successfully:', result);
+        this.localStorage.removeItem('user');
+        this.localStorage.removeItem('token');
+        this.localStorage.removeItem('movies');
+        this.Router.navigate(['welcome']);
+      },
+      error: (error) => {
+        console.error('Error deleting user:', error);
+        this.snackBar.open('Failed to delete profile. Please try again.', 'OK', {
+          duration: 3000
+        });
+      }
+    });
+  }
 
   goBack(): void {
 
