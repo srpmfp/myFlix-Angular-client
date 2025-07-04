@@ -1,4 +1,4 @@
-[**my-flix-angular-client**](../../../README.md)
+[**my-flix-angular-client**](/README.md)
 
 ***
 
