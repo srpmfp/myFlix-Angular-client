@@ -18,6 +18,15 @@ export class WelcomePage {
   private dialog = inject(MatDialog);
   private Router = inject(Router);
   private localStorage = inject(LocalStorageService);
+  
+  /**
+   * @function ngOnInit
+   * 
+   * This function is called when the component is initialized.
+   * It checks if a token exists in localStorage.
+   * If a token exists, it redirects the user to the movies page.
+   * @returns {void}
+   */
   ngOnInit(): void {
     if (localStorage.getItem('token')) {
       // If token exists, redirect to profile
@@ -25,11 +34,25 @@ export class WelcomePage {
     }
   }
 
+  /**
+   * @function openUserRegistrationDialog
+   *  Opens the user registration dialog.
+   *  This function is triggered when the user clicks on the "Sign Up" button.
+   * @see UserSignupForm {@link UserSignupForm} for the registration form component.
+   * @returns {void}
+   */
   openUserRegistrationDialog(): void {
     this.dialog.open(UserSignupForm, {
       width: '280px'
     });
   }
+  /**
+   * @function openUserLoginDialog
+   * Opens the user login dialog.
+   * This function is triggered when the user clicks on the "Login" button.
+   * @see UserLoginForm {@link UserLoginForm} for the login form component.
+   * * @returns {void}
+   */
 
   openUserLoginDialog(): void {
     this.dialog.open(UserLoginForm, {

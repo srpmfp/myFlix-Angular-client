@@ -1,0 +1,7 @@
+{
+    "entryPoints": [
+        "src/app/menubar-view/menubar-view.ts", "src/app/profile-view/profile-view.ts", "src/app/movie-card/movie-card.ts",
+         "src/app/welcome-view/welcome-view.ts","src/app/details-dialog/details-dialog.ts", "src/app/user-login-form/user-login-form.ts",
+         "src/app/user-signup-form/user-signup-form.ts",  "src/app/services/storage.service.ts", "src/app/fetch-api-data.ts"
+    ]
+}

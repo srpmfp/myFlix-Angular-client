@@ -70,6 +70,16 @@ export class MovieCard {
     });
   }
 
+/**
+ * @function setDialog
+ * Prepares the dialog data based on the information type.
+ * @param data - The data to be displayed in the dialog.
+ * Uses a switch statement to handle different information types (Genre, Director, Synopsis)
+ * @param infoType - 
+ * The parameter that determines which case to execute.
+ * @returns The formatted dialog data.
+ */
+
   setDialog(data: any, infoType: string): any {
 
     switch
@@ -108,6 +118,11 @@ export class MovieCard {
     }
   }
 
+  /**
+   * @function ngOnInit
+   * Initializes the component and fetches the list of movies.
+   * This function is called when the component is created.
+   */
   ngOnInit(): void {
 
     this.getMovies();
@@ -116,7 +131,12 @@ export class MovieCard {
 
 
 
-
+/**
+ * @function isFavorite
+ * Checks if a movie is in the user's favorites list.
+ * @param movieId - The ID of the movie to check.
+ * @returns A string indicating whether the movie is a favorite or not to set CSS classes.
+ */
   isFavorite(movieId: any): any {
     // const parsedMovies = JSON.parse(movieId || '[]');
     const user = this.localStorage.getItem('user');
@@ -132,6 +152,13 @@ export class MovieCard {
     // Trigger change detection to update the UI
   }
 
+  /**
+   * @function getMovies
+   * Fetches the list of movies from the API and stores them in localStorage.
+   * This function is called when the component is initialized.
+   * @see UserRegistrationService.getAllMovies for API call
+   * @see LocalStorageService {@link LocalStorageService.setItem} for storing movies
+   */
   getMovies(): void {
     this.fetchApiData.getAllMovies().subscribe({
       next: (resp: any) => {
@@ -145,6 +172,16 @@ export class MovieCard {
       }
     });
   }
+
+  /**
+   * @function addToFavorites
+   * Adds or removes a movie from the user's favorites list. uses localstorage to optimistically update the UI.
+   * @param movieId - The ID of the movie to be added or removed.
+   * @see UserRegistrationService.addFavoriteMovie {@link UserRegistrationService.addFavoriteMovie} for API call
+   * @see UserRegistrationService.deleteFavoriteMovie {@link UserRegistrationService.deleteFavoriteMovie} for API call
+   * @see LocalStorageService {@link LocalStorageService.setItem} for storing user data
+   * This  function optimistically updates the local state and then makes an API call.
+   */
 
   addToFavorites(movieId: any): void {
     const localUser = this.localStorage.getItem('user');

@@ -13,7 +13,11 @@ const apiUrl = 'https://appflixcf-d4726ef19667.herokuapp.com/';
   providedIn: 'root'
 })
 
-
+/**
+ * @module UserRegistrationService
+ * @remarks This module provides a service for user registration, login, and profile management in the MyFlix Angular application.
+ *
+ */
 export class UserRegistrationService {
 
   constructor(private http: HttpClient) { }
@@ -23,6 +27,20 @@ export class UserRegistrationService {
 
 
   //Create User
+  /**
+   * 
+   * @param userDetails - An object containing user details such as username, password, email, and birthday.
+   * @example
+   * ```typescript
+   * const userDetails = {
+   *   Username: 'john_doe',
+   *   Password: 'securePassword123',
+   *   Email: 'john@example.com',
+   *   Birthday: '1990-01-01'
+   * };
+   * ```
+   * @returns An observable containing the server response.
+   */
   public userRegistration(userDetails: any): Observable<any> {
 
 
@@ -31,7 +49,6 @@ export class UserRegistrationService {
     });
 
     const body = JSON.stringify(userDetails);
-
 
     return this.http.post(apiUrl + 'users', body, { headers }).pipe(
       map((response: any) => {
@@ -42,7 +59,43 @@ export class UserRegistrationService {
     );
   }
 
-  // User login function
+ 
+  /**
+   * @function userLogin
+   * @param user  
+   * This function handles user login by sending a POST request to the server with the user's credentials.
+   * It expects an object containing the username and password.
+   *
+   * @returns An observable containing the server response. 
+   * If the login is successful, it stores the token in localStorage.
+   * @example 
+   * request body should be in the following format:
+   * ```typescript
+   * const user = {
+   *   Username: 'john_doe',
+   *   Password: 'securePassword123'
+   * };
+   * ```
+   * Response will include a token if login is successful:
+   * 
+   * ```typescript
+   * {
+   *   token: 'your_jwt_token_here',
+   *   user: {
+   *     Passord: 'hashedPassword',
+   *     Username: 'john_doe',
+   *     Birthday: '1990-01-01',     
+   *     Email: 'john@example.com'
+   *     movieID: ['movieId1', 'movieId2'],
+   *     _id: 'userId123',
+   *   }
+   * };
+   * ```
+   * @remarks
+   * This function is used to authenticate users in the MyFlix Angular application.
+   */
+
+
   public userLogin(user: any): Observable<any> {
 
     const headers = new HttpHeaders({
@@ -61,6 +114,15 @@ export class UserRegistrationService {
     );
   }
 
+/**
+ * @function addFavoriteMovie
+ * This function adds a movie to the user's favorite list.
+ * It sends a POST request to the server with the user's username and the movie ID.
+ * @param userName - The username of the user.
+ * @param movieId - The ID of the movie to add.
+ * @returns An observable containing the server response.
+ */
+
   //Add a favorite movie to the user's list
   public addFavoriteMovie(userName: any, movieId: any): Observable<any> {
     return this.http.post(apiUrl + 'users/' + userName, movieId, {
@@ -76,8 +138,14 @@ export class UserRegistrationService {
     );
   }
 
-  //R
-  //Filter movies by title
+  /**
+   * @function getOneMovie
+   * This function retrieves details of a specific movie by its title.
+   * It sends a GET request to the server with the movie title.
+   * @param movieDetail - The title of the movie to retrieve.
+   * @returns An observable containing the movie details.
+  */
+
   public getOneMovie(movieDetail: any): Observable<any> {
 
     return this.http.get(apiUrl + 'movies/' + movieDetail, {
@@ -89,6 +157,11 @@ export class UserRegistrationService {
     )
   }
   //Get Director by name
+  /**
+   * @function getDirector
+   * @param directorName 
+   * @returns 
+   */
   public getDirector(directorName: any): Observable<any> {
 
     return this.http.get(apiUrl + 'movies/director/' + directorName, {
@@ -97,6 +170,15 @@ export class UserRegistrationService {
       })
     })
   }
+
+  /**
+   * @function getGenre
+   * @param genreName 
+   * @returns 
+   * This function retrieves details of a specific genre by its name.
+   * It sends a GET request to the server with the genre name.
+   * @remarks
+   */
   // get genre by name
   public getGenre(genreName: any): Observable<any> {
 
@@ -107,6 +189,16 @@ export class UserRegistrationService {
     })
   }
 
+  /**
+   * @function getUser
+   * @param userInfo - The username of the user to retrieve.
+   * @returns An observable containing the user information.
+   * This function retrieves user information by username.
+   * It sends a GET request to the server with the username.
+   * Be sure to include the token in the request headers for authentication.
+   * @remarks
+   * The user information includes details such as username, email, birthday, and favorite movies.
+   */
 
   // Get user info by username
   public getUser(userInfo: any): Observable<any> {
@@ -125,6 +217,14 @@ export class UserRegistrationService {
     );
   }
 
+  /**
+   * @function editUser
+   * This function updates user information such as username, email, and birthday.
+   * @param Username - The username of the user to update.
+   * @param userData - An object containing the updated user information.
+   * @returns An observable containing the server response.
+   * 
+   */
 
 
   //Update user information
@@ -145,7 +245,14 @@ export class UserRegistrationService {
     );
   }
 
-
+  /**
+   * @function deleteFavoriteMovie
+   * This function removes a movie from the user's favorite list.
+   * It sends a DELETE request to the server with the user's ID and the movie ID.
+   * @param userId - The ID of the user.
+   * @param movieId - The ID of the movie to remove from favorites.
+   * @returns An observable containing the server response.
+   */
   public deleteFavoriteMovie(userId: any, movieId: any): Observable<any> {
 
     return this.http.delete(apiUrl + 'users/' + userId + "/movies/" + movieId, {
@@ -163,6 +270,15 @@ export class UserRegistrationService {
     );
   }
 
+  /**
+   * @function getStoredUser
+   * This function retrieves the stored user data from localStorage.
+   * It parses the JSON string stored under the key 'user' and returns the user object.
+   * @returns The user object if found, or null if not found.
+   * @remarks
+   * This function is used to access user data such as username, email, birthday, and favorite movies.
+   * It is typically called after a user logs in or registers to retrieve their profile information.
+   */
   // Local storage utility methods
   public getStoredUser(): any {
     const user = this.localStorage.getItem('user');

@@ -31,8 +31,18 @@ export class UserSignupForm {
   private dialogRef = inject(MatDialogRef<UserSignupForm>);
   private snackBar = inject(MatSnackBar);
   // Function responsible for sending the form inputs to the backend
+
+  /**
+   * 
+   * @function registerUser
+   *  This function is called when the user submits the registration form.
+   *  It validates the form data and sends a registration request to the backend.
+   * If the registration is successful, it closes the dialog and shows a success message.
+   * If there is an error, it displays an error message in a snackbar.
+   * @see UserRegistrationService {@link UserRegistrationService.userRegistration} for the API interaction.
+   * @returns {void}
+   */
   registerUser(): void {
-    console.log('Attempting registration with data:', this.userDetails);
 
     // Validate form data
     if (!this.userDetails.Username || !this.userDetails.Password || !this.userDetails.email) {
@@ -44,14 +54,12 @@ export class UserSignupForm {
 
     this.fetchApiData.userRegistration(this.userDetails).subscribe({
       next: (result) => {
-        console.log('Registration successful:', result);
         this.dialogRef.close(); // This will close the modal on success!
         this.snackBar.open('Registration successful!', 'OK', {
           duration: 2000
         });
       },
       error: (error) => {
-        console.error('Registration error:', error);
         let errorMessage = 'Registration failed. Please try again.';
 
         if (error.error && error.error.message) {

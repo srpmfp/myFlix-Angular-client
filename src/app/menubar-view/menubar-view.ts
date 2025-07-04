@@ -22,15 +22,29 @@ import { LocalStorageService } from '../services/storage.service';
   templateUrl: './menubar-view.html',
   styleUrl: './menubar-view.scss'
 })
+
+// test documentation
 export class MenubarView {
   Router = inject(Router);
   localStorage = inject(LocalStorageService);
   snackBar = inject(MatSnackBar);
+  /**
+   * @function navToProfile
+   * Navigates to the user profile page.
+
+   * 
+   * This function is triggered when the user clicks on the profile button in the menubar.
+   * It uses the Angular Router to navigate to the 'profile' route.
+   */
   navToProfile(): void {
     this.Router.navigate(['profile']);
 
   }
 
+  /**
+   * @function logOut
+   * Logs the user out by clearing localStorage and navigating to the welcome page.
+   */
   logOut(): void {
     // Clear localStorage
     this.localStorage.clear();

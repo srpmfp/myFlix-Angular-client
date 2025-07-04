@@ -30,6 +30,20 @@ import { Pipe } from '@angular/core';
   styleUrl: './profile-view.scss'
 })
 
+/**
+ * @module ProfileView
+ * @name ProfileView
+ * @link app/profile-view/profile-view.ts
+ * @class ProfileView
+ * @description
+ * This module contains the ProfileView component, which allows users to view and edit their profile information.
+ * It includes functionality to update user details such as username, email, and birthday,
+ * as well as delete the user profile.
+ * It uses Angular Material for UI components and services for API interactions.
+ * @author Sean R. McGowan
+ * @version 1.0.0
+ * 
+ */
 
 export class ProfileView implements OnInit {
   localStorage = inject(LocalStorageService);
@@ -43,10 +57,22 @@ export class ProfileView implements OnInit {
 
 
   // Helper method to check if running in browser
+  /**
+   * @function isBrowser
+   * Checks if the application is running in a browser environment.
+   * @returns True if running in a browser, false otherwise.
+   */
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
   }
 
+
+  /**
+   * @function ngOnInit
+   * This function is called when the component is initialized.
+   * It checks if a user is logged in by looking for a 'user' item in localStorage.
+   * If no user is found, it redirects to the welcome page.
+   */
   ngOnInit(): void {
     if (!this.localStorage.getItem('user')) {
       this.Router.navigate(['welcome']);
@@ -54,6 +80,14 @@ export class ProfileView implements OnInit {
     this.loadUserDetails();
 
   }
+
+/**
+ * @function loadUserDetails
+ * Loads existing user details from localStorage and populates the userDetails object.
+ * This function is called during component initialization to pre-fill the form with user data.
+ * * It retrieves the user data from localStorage, parses it, and assigns the values to the userDetails object.
+ * * @remarks
+ */
 
   // Load existing user details from localStorage
   private loadUserDetails(): void {
@@ -77,6 +111,20 @@ export class ProfileView implements OnInit {
       }
     }
   }
+
+  /**
+   * @function updateUser
+   * This function is called when the user submits the profile update form.
+   * It retrieves the current user data from localStorage,
+   * validates the input, and sends an update request to the server.
+   * * If the update is successful, it updates the localStorage with the new user data,
+   * clears the password field in userDetails, and shows a success message.
+   * * If there is an error during the update, it logs the error and shows an error message in a snackbar.
+   * @see UserRegistrationService.editUser for the API interaction.
+   * @see LocalStorageService for managing localStorage operations.
+   * Updates the user profile information.
+   * @returns void
+   */
 
   updateUser(): void {
     if (!this.isBrowser()) {
@@ -133,6 +181,17 @@ export class ProfileView implements OnInit {
     }
   }
 
+  /**
+   * @function deleteUser
+   * Deletes the user profile by sending a request to the server.
+   * It retrieves the username from localStorage, sends a delete request,
+   * and handles the response.
+   * If the deletion is successful, it clears the localStorage and navigates to the welcome page.
+   * If there is an error, it logs the error and shows an error message in a snackbar.
+   * @see UserRegistrationService.deleteUser for the API interaction.
+   * @see LocalStorageService for managing localStorage operations.
+   */
+
   deleteUser(): void {
     const Username = JSON.parse(this.localStorage.getItem('user') || '{}').Username;
       console.log('Deleting user with ID:', Username);
@@ -153,6 +212,12 @@ export class ProfileView implements OnInit {
     });
   }
 
+  /**
+   * @function goBack
+   * Navigates back to the movies page.
+   * This function is typically called when the user clicks a "Back" button in the profile view.
+   *  @returns void
+   */ 
   goBack(): void {
 
     this.Router.navigate(['/movies']); // or wherever you want to navigate back to
