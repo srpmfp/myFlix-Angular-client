@@ -6,6 +6,9 @@
 /out-tsc
 /bazel-out
 
+#custome md generator
+/update-README.js
+
 # Node
 /node_modules
 npm-debug.log
